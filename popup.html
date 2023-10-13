@@ -1,0 +1,24 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Extension</title>
+  <script type="module" src="popup.js"></script>
+    <script type="module" src="background.js"></script>
+
+</head>
+<body>
+    <div id="campcontainer">
+
+  <label for="campaignName">Campaign Name:</label>
+    <input type="text" id="campaignName" placeholder="Enter campaign name">
+    <button id="addCampaignButton" class="btn btn-primary">Add</button>
+  </div>
+
+    <button id="campaign" style="display:none"></button>
+
+
+  <button id="startSelectionButton" style="display:none">Get Content</button>
+  <div id="contentDiv"></div>
+</body>
+</html>
