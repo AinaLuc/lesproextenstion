@@ -1,4 +1,3 @@
-// manifest.json
 {
   "manifest_version": 3,
   "name": "My Extension",
@@ -6,25 +5,18 @@
   "description": "Interact with my website",
   "permissions": [
     "tabs",
-     "activeTab",
+    "activeTab",
     "scripting"
-   
   ],
-
-   "content_scripts": [
+  "content_scripts": [
     {
-      "matches": ["http://les-professionnels-de-madagascar.com/category/*"],
-      
-      "js": ["contentScript.js"]
+      "matches": ["<all_urls>"],
+      "js": ["initialScript.js"]
     }
   ],
-  
-
-"background": {
+  "background": {
     "service_worker": "background.js"
-
   },
-
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -33,9 +25,5 @@
       "128": "images/icon128.png"
     }
   }
-  
-}
-
-
  
-
+}

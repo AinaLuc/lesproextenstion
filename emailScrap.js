@@ -1,0 +1,1 @@
+chrome.runtime.sendMessage({ type: "linksDone", data: "got all links" });

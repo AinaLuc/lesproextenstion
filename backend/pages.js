@@ -17,12 +17,13 @@ const pageSchema = new mongoose.Schema({
   ],
   footerNavLinks: {
     type: [String], // An array of strings for footer navigation links
-    required: true,
   },
   pageURL: {
     type: String,
-    unique: true, // Ensure each page URL is unique
   },
+  used:{
+    type:Boolean,
+  }
 });
 
 // Create a model for the 'pages' collection

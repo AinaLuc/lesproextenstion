@@ -132,8 +132,19 @@ function visitFooterLinksSequentially(footerNavLinks) {
 
 }*/
 
-            // Function to scrape footer navigation links
-            function scrapeFooterNavLinks() {
+      /*   function scrapeFooterNavLinks() {
+    const navLinks = document.querySelectorAll("#nav-old-below select option");
+    const footerNavLinks = [];
+
+    // Limit the number of links to two
+    for (let i = 0; i < 3  && i < navLinks.length; i++) {
+        footerNavLinks.push(navLinks[i].value);
+    }
+
+    return footerNavLinks;
+}*/
+
+  function scrapeFooterNavLinks() {
                 const navLinks = document.querySelectorAll("#nav-old-below select option");
                 const footerNavLinks = [];
                 navLinks.forEach((option) => {
@@ -141,6 +152,7 @@ function visitFooterLinksSequentially(footerNavLinks) {
                 });
                 return footerNavLinks;
             }
+
 
                    
 

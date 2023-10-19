@@ -9,10 +9,10 @@ function extractDataFromElement(tdElement) {
 }
 
 // Extract data from all matching elements
-const tdElements = document.querySelectorAll("td.colonne-60");
+const tdElements2 = document.querySelectorAll("td.colonne-60");
 let email =''
 
-for (const tdElement of tdElements) {
+for (const tdElement of tdElements2) {
     const textContent = tdElement.textContent;
     if (textContent.includes("Adresse électronique :")) {
          email = extractDataFromElement(tdElement);
@@ -28,5 +28,6 @@ for (const tdElement of tdElements) {
     const bizName = {businessName,email}
     console.log('business name',businessName)
   chrome.runtime.sendMessage({ type: "extractedData", data: bizName });
+
 
 

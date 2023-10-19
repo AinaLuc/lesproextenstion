@@ -1,52 +1,43 @@
-setTimeout(() => {
-                  //  console.log('Visiting link:', link);
+(function() {
+    const targetAttribute = "mainEntityOfPage";
+    const elements = document.querySelectorAll(`a[itemprop='${targetAttribute}']`);
+    const data = [];
 
-                    // Add your code to process the page here
-                    const itempropValue = "mainEntityOfPage";
-                   // const currentUrl = window.location.href;
-                    //console.log('current url', currentUrl);
+    elements.forEach((element) => {
+        const businessName = element.textContent.trim();
+        const link = element.href;
+        data.push({ businessName, link });
+    });
 
-                    // Customize the criteria to select all <a> elements with the specified itemprop value
-                    const linkElements = document.querySelectorAll(`a[itemprop='${itempropValue}']`);
-                    const businessData = [];
+    // Scroll to the first element
+    if (data.length > 0) {
+        const firstElement = elements[0];
+        firstElement.scrollIntoView({ behavior: "smooth" });
 
-                    linkElements.forEach((linkElement) => {
-                        const businessName = linkElement.textContent.trim();
-                        const link = linkElement.href;
-                        businessData.push({ businessName, link });
-                    });
+        // Perform actions on the selected element
+        console.log("Selected element:", data[0]);
 
-                    // Scroll to the first element
-                    if (businessData.length > 0) {
-                        const firstLinkElement = linkElements[0];
-                        firstLinkElement.scrollIntoView({ behavior: "smooth" });
-                        console.log('campaign text', campaignTexts);
+        // If there are more elements, select them sequentially
+        let selectedIndex = 1;
+        const scrollInterval = setInterval(() => {
+            if (selectedIndex < data.length) {
+                const nextElement = elements[selectedIndex];
+                nextElement.scrollIntoView({ behavior: "smooth" });
+                console.log("Selected element:", data[selectedIndex]);
+                selectedIndex++;
+            } else {
+                clearInterval(scrollInterval);
 
-                        // Perform any action on the selected element (e.g., store to MongoDB)
-                        console.log("Selected element:", businessData[0]);
+                // All elements have been processed, send data to the background script
+                console.log('Data:', data);
 
-                        // If there are more elements to select, set a 5-second delay and then select the next one
-                        let selectedElementIndex = 1;
-                        const scrollInterval = setInterval(() => {
-                            if (selectedElementIndex < businessData.length) {
-                                const nextLinkElement = linkElements[selectedElementIndex];
-                                nextLinkElement.scrollIntoView({ behavior: "smooth" });
-                                console.log("Selected element:", businessData[selectedElementIndex]);
-                                selectedElementIndex++;
-                            } else {
-                                clearInterval(scrollInterval);
+                chrome.runtime.sendMessage({ type: "footerLinks", data: data });
 
-                                // All elements selected, send a message to the background script
-                               
-                                console.log('business data', businessData);
-
-                                // Continue visiting the next link and resolve the promise with the data
-                                  chrome.runtime.sendMessage({ type: "footerLinks", data: businessData });
-
-                            }
-                        }, 1000); // 5 seconds in milliseconds
-                    } else {
-                        // No business data on this page
-                        resolve([]);
-                    }
-                }, 1000);
+                // Continue the next task or resolve the promise with the data
+            }
+        }, 1000); // 5 seconds in milliseconds
+    } else {
+        // No data found on this page
+        console.log('No data found on this page.');
+    }
+})();

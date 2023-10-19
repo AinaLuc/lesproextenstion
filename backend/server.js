@@ -13,8 +13,13 @@ mongoose.connect('mongodb://localhost/mydatabase', { useNewUrlParser: true, useU
 
 app.use(express.json());
 
-// Enable CORS for all routes
-app.use(cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust this to your security needs
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
 
 app.post('/api/storeData', async (req, res) => {
   const data = req.body; // Data received from the extension
@@ -26,6 +31,7 @@ console.log('req.body',req.body.campaignName)
       businessData: data.businessData, // Map businessData directly
       footerNavLinks: data.footerNavLinks,
       pageURL: data.pageURL,
+      used:false,
       // You can add more fields here if needed
     };
 
@@ -54,7 +60,7 @@ app.post('/api/savedBusinessInfo', async (req, res) => {
     const businessData = new Business({
       // Map the fields as needed
       businessName: businessInfo.businessName,
-      email: businessInfo.dataEmail, // Use the correct key to access the email data
+      email: businessInfo.email, // Use the correct key to access the email data
       // Add other fields as needed
     });
 
@@ -69,6 +75,57 @@ app.post('/api/savedBusinessInfo', async (req, res) => {
     res.status(500).send('Error inserting business info into MongoDB');
   }
 });
+
+// Create an endpoint to save page data
+app.post('/api/savePageData', async (req, res) => {
+  const pageDataArray = req.body; // An array of objects received from the extension
+
+  // Create a new Page document
+  const newPage = new Page({
+    businessData: pageDataArray,
+  });
+
+  // Save the new Page document to the database
+  newPage.save()
+    .then((result) => {
+      console.log('Page document saved:', result);
+
+      // Send a response with the saved data
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      console.error('Error saving Page document:', error);
+      res.status(500).send('Error saving Page document');
+    });
+});
+
+
+// Create a route to retrieve all businessData from all pages
+app.get('/api/businessData', async (req, res) => {
+  try {
+    // Retrieve all pages from the database
+    const pages = await Page.find();
+
+    // Create a copy of the retrieved pages to send the initial state to the front end
+    const initialPages = pages.map((page) => ({
+      businessData: page.businessData,
+      used: page.used, // Initial state is false
+    }));
+
+    // Send the initial state to the front end
+    res.json(initialPages);
+
+    // Now, you can update the 'used' field in the database
+    for (const page of pages) {
+      page.used = true;
+      await page.save(); // Save the updated page
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve businessData' });
+  }
+});
+
+
 
 
 

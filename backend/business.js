@@ -6,11 +6,9 @@ const mongoose = require('mongoose');
 const businessSchema = new mongoose.Schema({
   businessName: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
-    required: true,
   },
   // Add other fields as needed
 });
